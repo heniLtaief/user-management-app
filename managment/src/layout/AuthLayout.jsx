@@ -20,7 +20,9 @@ const AuthLayout = ({ mode, children }) => {
           <h2>{description}</h2>
           <p>{subDescription}</p>
           <Link to={linkTo}>
-            <Button variant="outline">{linkText}</Button>
+            <Button variant="outline" className="register-btn">
+              {linkText}
+            </Button>
           </Link>
         </div>
 

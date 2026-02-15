@@ -1,5 +1,3 @@
-// src/auth/pages/AuthPage.jsx
-import { useParams } from "react-router-dom";
 import { useAuthForm } from "../../hooks/useAuthForm";
 import AuthLayout from "../../layout/AuthLayout";
 import AuthForm from "./AuthForm";

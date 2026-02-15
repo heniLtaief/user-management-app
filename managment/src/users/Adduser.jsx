@@ -1,11 +1,8 @@
-import { Link } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./AddUser.css";
-import add from "../assets/add-user.svg";
 import { useMutation } from "@tanstack/react-query";
-import Button from "../components/button/Button";
 import Input from "../components/input/Input";
 import Dropdown from "../components/Dropdown/Dropdown";
 

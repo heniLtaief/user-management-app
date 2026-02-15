@@ -238,6 +238,10 @@ body {
   gap: 20px;
 }
 
+.btn-outline.register-btn {
+  color: white;
+}
+
 .auth-input,
 .auth-select {
   width: 100%;
@@ -270,6 +274,56 @@ body {
 .auth-input::placeholder {
   color: var(--gray-4);
 }
+
+/* Password field with eye icon */
+.password-field-wrapper {
+  width: 100%;
+}
+
+.password-input-container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.password-input {
+  width: 100%;
+  padding-right: 45px !important; /* Make space for the icon */
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gray-5);
+  transition: all 0.2s ease;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.password-toggle:hover {
+  color: var(--green-5);
+  background: rgba(43, 212, 150, 0.1);
+}
+
+.password-toggle:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--green-4);
+}
+
+.password-toggle svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Keep all your existing styles exactly the same */
 
 .error-text {
   color: #e74c3c;

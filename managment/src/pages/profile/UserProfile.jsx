@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./MyProfile.css";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Button from "../../components/button/Button";
 import Input from "../../components/input/Input";
-import Dropdown from "../../components/Dropdown/Dropdown";
 
 const fetchUserProfile = async () => {
   const token = localStorage.getItem("token");
@@ -28,12 +27,12 @@ const updateUserProfile = async ({ userId, formData }) => {
     body: formData,
   });
   if (!res.ok) {
-    throw new Error("Erreur modification profil");
+    throw new Error("Erreur modification profile");
   }
   return res.json();
 };
 
-const MyProfile = () => {
+const UserProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState({});
   const queryClient = useQueryClient();
@@ -264,4 +263,4 @@ const MyProfile = () => {
   );
 };
 
-export default MyProfile;
+export default UserProfile;

@@ -2,10 +2,9 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import AdminDashboard from "./pages/dashboard/AdminDashboard";
 import AddUser from "./users/AddUser";
-import Edituser from "./users/Edituser";
+import EditUser from "./users/EditUser";
 import MyProfile from "./pages/profile/MyProfile";
-import Dashboardstat from "./pages/dashboard/DashboardStat";
-import UserProfil from "./pages/profile/UserProfil";
+import DashboardStat from "./pages/dashboard/DashboardStat";
 
 import AdminLayout from "./layout/AdminLayout";
 import UserLayout from "./layout/UserLayout";
@@ -16,6 +15,7 @@ import EditTask from "./tasks/EditTask";
 import UserDashboard from "./pages/dashboard/UserDashboard";
 import TaskDashboard from "./tasks/taskDashboard";
 import AuthPage from "./pages/auth/AuthPage";
+import UserProfile from "./pages/profile/UserProfile";
 
 const App = () => {
   return (
@@ -35,8 +35,8 @@ const App = () => {
         >
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/add-user" element={<AddUser />} />
-          <Route path="/admin-dashboard/edit/:id" element={<Edituser />} />
-          <Route path="/dashboard-stats" element={<Dashboardstat />} />
+          <Route path="/admin-dashboard/edit/:id" element={<EditUser />} />
+          <Route path="/dashboard-stats" element={<DashboardStat />} />
           <Route path="/my-profile" element={<MyProfile />} />
           <Route path="/add-task-user/:id" element={<AddTask />} />
           <Route path="/edit-task-user/:id/:taskId" element={<EditTask />} />
@@ -51,7 +51,7 @@ const App = () => {
             </ProtectedRoute>
           }
         >
-          <Route path="/user-profile" element={<UserProfil />} />
+          <Route path="/user-profile" element={<UserProfile />} />
           <Route path="/user-dashboard" element={<UserDashboard />} />
         </Route>
 

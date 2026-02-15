@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./Edituser.css";
-import Button from "../components/button/Button";
+import "./EditUser.css";
 import Dropdown from "../components/Dropdown/Dropdown";
 import Input from "../components/input/Input";
 
-const Edituser = () => {
+const EditUser = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -261,4 +260,4 @@ const Edituser = () => {
   );
 };
 
-export default Edituser;
+export default EditUser;
