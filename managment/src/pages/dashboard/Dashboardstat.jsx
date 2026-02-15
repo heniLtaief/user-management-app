@@ -2,11 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Pie, Bar } from "react-chartjs-2";
 import "chart.js/auto";
-import "./dashboardstat.css";
+import "./DashboardStat.css";
 import AdminIcon from "../../components/icons/AdminIcon";
 import UserIcon from "../../components/icons/UserIcon";
 import TotalUserIcon from "../../components/icons/TotalUserIcon";
-import GroupsIcon from '@mui/icons-material/Groups'; 
+import UsersCountIcon from "../../components/icons/UsersCountIcon";
 
 // fetch users
 const fetchUsers = async () => {
@@ -22,9 +22,12 @@ const fetchUsers = async () => {
 const fetchTasks = async () => {
   const token = localStorage.getItem("token");
   if (!token) throw new Error("No token found");
-  const res = await axios.get("http://localhost:4000/api/admin/tasks/tasks/all", {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+  const res = await axios.get(
+    "http://localhost:4000/api/admin/tasks/tasks/all",
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+  );
   return res.data.tasks; // tableau de toutes les tâches
 };
 const Dashboardstat = () => {
@@ -38,50 +41,101 @@ const Dashboardstat = () => {
     queryFn: fetchTasks,
   });
 
-  // Stats utilisateurs
   const adminCount = users.filter((u) => u.role === "admin").length;
   const userCount = users.filter((u) => u.role === "user").length;
-  const departementCount = users.filter((u) => u.departement).length;
+  const departementCount = new Set(
+    users.filter((u) => u.departement).map((u) => u.departement),
+  ).size;
   const totalCount = users.length;
-
-  // Pie chart roles
+  const colors = {
+    green4: "#4ade80", // Replace with your actual green-4 color
+    green6: "#16a34a", // Replace with your actual green-6 color
+    gray4: "#9ca3af", // Replace with your actual gray-4 color
+    gray6: "#4b5563", // Replace with your actual gray-6 color
+    warning: "#fbbf24", // Replace with your actual warning color
+    success: "#22c55e", // Replace with your actual success color
+    textPrimary: "#1f2937", // Replace with your actual text-primary
+    textSecondary: "#6b7280", // Replace with your actual text-secondary
+    border: "#e5e7eb", // Replace with your actual border color
+  };
   const pieData = {
     labels: ["Admins", "Users"],
     datasets: [
       {
-        label: "Nombre",
+        label: "Count",
         data: [adminCount, userCount],
-        backgroundColor: ["#7c3aed", "#eaafc8"],
-        borderWidth: 1,
+        backgroundColor: [colors.green4, colors.gray4],
+        borderColor: [colors.green6, colors.gray6],
+        borderWidth: 2,
       },
     ],
   };
 
-  // Latest users
-  const lastUsers = [...users].reverse().slice(0, 3);
+  const lastUsers = [...users]
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .slice(0, 3);
 
-  // Normaliser les status des tâches
-  const normalizedTasks = tasks.map((t) => ({
-    ...t,
-    status: t.status === "completed" ? 3 : t.status,
-  }));
+  const totalTasks = tasks.length;
+  const completedTasks = tasks.filter((t) => t.status === 3).length;
+  const inProgressTasks = tasks.filter((t) => t.status === 2).length;
+  const notStartedTasks = tasks.filter((t) => t.status === 1).length;
 
-  // Compter total vs complétées
-  const totalTasks = normalizedTasks.length;
-  const completedTasks = normalizedTasks.filter((t) => t.status === 3).length;
-
-  // Line chart (ou bar chart) pour total vs complétées
   const barData = {
-    labels: ["Tâches assignées", "Tâches complétées"],
+    labels: ["Not Started", "In Progress", "Completed"],
     datasets: [
       {
-        label: "Tâches",
-        data: [totalTasks, completedTasks],
-        backgroundColor: ["#7c3aed", "#22c55e"],
-        borderColor: ["#7c3aed", "#22c55e"],
-        borderWidth: 1,
+        label: "Tasks",
+        data: [notStartedTasks, inProgressTasks, completedTasks],
+        backgroundColor: [colors.gray4, colors.warning, colors.success],
+        borderColor: [colors.gray6, colors.warning, colors.success],
+        borderWidth: 2,
       },
     ],
+  };
+
+  const pieOptions = {
+    plugins: {
+      legend: {
+        labels: {
+          color: colors.textPrimary,
+          font: {
+            size: 14,
+          },
+        },
+      },
+    },
+  };
+
+  const barOptions = {
+    plugins: {
+      legend: {
+        labels: {
+          color: colors.textPrimary,
+          font: {
+            size: 14,
+          },
+        },
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          color: colors.textSecondary,
+        },
+        grid: {
+          color: colors.border,
+        },
+      },
+      x: {
+        ticks: {
+          color: colors.textSecondary,
+        },
+        grid: {
+          color: colors.border,
+        },
+      },
+    },
   };
 
   return (
@@ -89,57 +143,76 @@ const Dashboardstat = () => {
       <h1 className="dashboard-title">Admin Dashboard</h1>
 
       <div className="dashboard-stats">
-        <div className="stat-card admin-card">
+        <div className="stat-card">
+          <div className="stat-icon">
+            <AdminIcon />
+          </div>
           <h3>{adminCount}</h3>
-          <p>Admins <AdminIcon /></p>
+          <p>Admins</p>
         </div>
-        <div className="stat-card user-card">
+        <div className="stat-card">
+          <div className="stat-icon">
+            <UserIcon />
+          </div>
           <h3>{userCount}</h3>
-          <p>Users <UserIcon /></p>
+          <p>Users</p>
         </div>
-        <div className="stat-card total-card">
+        <div className="stat-card">
+          <div className="stat-icon">
+            <TotalUserIcon />
+          </div>
           <h3>{totalCount}</h3>
-          <p>Total Users <TotalUserIcon /></p>
+          <p>Total Users</p>
         </div>
-        <div className="stat-card total-card">
+        <div className="stat-card">
+          <div className="stat-icon">
+            <UsersCountIcon />
+          </div>
           <h3>{departementCount}</h3>
-         <p style={{ display: 'flex', alignItems: 'center', gap: '5px', transform: 'translateX(60px)'}}>
-  Départements
-  <svg 
-    xmlns="http://www.w3.org/2000/svg" 
-    width="20" 
-    height="20" 
-    fill="currentColor" 
-    className="bi bi-collection" 
-    viewBox="0 0 16 16"
-  >
-    <path d="M2.5 3.5a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1zm2-2a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1zM0 13a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 16 13V6a1.5 1.5 0 0 0-1.5-1.5h-13A1.5 1.5 0 0 0 0 6zm1.5.5A.5.5 0 0 1 1 13V6a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5z"/>
-  </svg>
-</p>
-
+          <p>Departments</p>
         </div>
       </div>
 
       <div className="dashboard-extra">
-        {/* Pie chart roles */}
         <div className="chart-container">
-          <h3>Répartition des rôles</h3>
-          <Pie data={pieData} />
+          <h3>Role Distribution</h3>
+          <div className="chart-wrapper">
+            <Pie data={pieData} options={pieOptions} />
+          </div>
         </div>
 
-        {/* Bar chart total vs completed */}
         <div className="chart-container">
-          <h3>Tâches assignées vs complétées</h3>
-          <Bar data={barData} />
+          <h3>Task Status</h3>
+          <div className="chart-wrapper">
+            <Bar data={barData} options={barOptions} />
+          </div>
         </div>
 
-        {/* Latest users */}
         <div className="latest-users">
-          <h3>Derniers utilisateurs</h3>
+          <h3>Latest Users</h3>
           <ul>
-            {lastUsers.map((u) => (
-              <li key={u._id}>
-                {u.username} - <span className={`role-badge ${u.role}`}>{u.role}</span>
+            {lastUsers.map((user) => (
+              <li key={user._id}>
+                <div className="user-item">
+                  <div className="user-avatar">
+                    {user.profil ? (
+                      <img
+                        src={`http://localhost:4000/api/${user.profil}`}
+                        alt={user.username}
+                      />
+                    ) : (
+                      <div className="avatar-fallback">
+                        {user.username?.charAt(0)?.toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                  <div className="user-info">
+                    <span className="user-name">{user.username}</span>
+                    <span className={`user-role ${user.role}`}>
+                      {user.role}
+                    </span>
+                  </div>
+                </div>
               </li>
             ))}
           </ul>

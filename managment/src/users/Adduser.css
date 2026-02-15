@@ -1,231 +1,203 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    
+/* AddUser.css - Updated with Gray/Green palette */
+.adduser-container {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 80px 16px 16px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  box-shadow: var(--shadow-xl);
+  border-radius: 40px;
+  overflow: hidden;
+  background: var(--surface);
 }
 
-.adduser-container{
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 80px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    
-}
-.edituser-container{
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 80px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    
-}
-.edituser-wrapper{
-    position: relative;
-    max-width: 1100px;
-    width: 100%;
-    height: 600px;
-    background-color: white;
-    border-radius: 40px;
-    box-shadow: 0 20px 60px rgb(0, 0,0,0.3);
-    overflow: hidden;
-
+.adduser-wrapper {
+  width: 100%;
+  height: 100%;
 }
 
-
-.adduser-wrapper{
-    position: relative;
-    max-width: 1100px;
-    width: 100%;
-    height: 800px;
-    background-color: white;
-    border-radius: 40px;
-    box-shadow: 0 20px 60px rgb(0, 0,0,0.3);
-    overflow: hidden;
-
+.adduser-desc {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 45%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--gray-6), var(--gray-9));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--gray-0);
+  padding: 40px;
+  text-align: center;
+  border-bottom-right-radius: 100px;
 }
 
-
-.adduser-desc{
-position: absolute;
-top: 0;
-left: 0;
-width: 50%;
-height: 100%;
-background: #654ea3;  /* fallback for old browsers */
-background: -webkit-linear-gradient(to right, #eaafc8, #654ea3);  /* Chrome 10-25, Safari 5.1-6 */
-background: linear-gradient(to right, #eaafc8, #654ea3); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-color: white;
-padding: 40px;
-text-align: center;
-border-top-right-radius: 150px;
-border-bottom-right-radius: 100px;
+.adduser-desc h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+  color: var(--gray-0);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.nom{
-    font-size: 3em;
-    font-weight: 1000;
-    color: #654ea3;
-    text-align: center;
-    margin-top: 20px;
-    transform: translateY(70px);
-    
+.adduser-desc p {
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+  opacity: 0.95;
+  line-height: 1.6;
 }
 
-.adduser-desc p{
-    font-size: 1rem;
-    margin-bottom: 30px;
-    opacity: 1;
-    line-height: 1.6;
+.icon {
+  margin-bottom: 20px;
+  opacity: 0.9;
+  color: var(--gray-0);
 }
 
-.icon{
-    margin-top: 20px;
-    opacity: 0.9;
-    align-items: center;
-    transform: translateX(-10px);
-    
+.icon svg {
+  width: 120px;
+  height: 120px;
+  fill: var(--gray-0);
 }
 
-
-.adduser-form-container{
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 50%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
-
+.adduser-form-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 55%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
 }
 
-.adduser-form-box h2{
-    font-size: 2rem;
-    color: #eaafc8;
-    margin-bottom: 30px;
-    font-weight: 700;
-   text-align: center;
- 
-    
+.adduser-form-box {
+  width: 100%;
 }
 
-.adduser-form{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.adduser-form-box h2 {
+  font-size: 2rem;
+  color: var(--gray-7);
+  margin-bottom: 30px;
+  font-weight: 700;
+  text-align: center;
 }
 
-
-.text{
-    font-weight: 600;
-    font-size: 0.9rem;
-    margin-bottom: 8px;
-   
+.adduser-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
-
-.adduser-input{
-     width: 100%;
-    padding: 15px 20px;
-    background: #f5f5f5;
-    border: none;
-    border-radius: 10px;
-    font-size: 1rem;
-    outline: none;
-    transition: all 0.3s ease;
-    color: #3f3068;
+.text {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--gray-7);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+  display: block;
 }
 
-
-.adduser-input:focus{
-    background:#fce9f1;
-    box-shadow: #eaafc8;
+.adduser-input {
+  width: 100%;
+  padding: 14px 18px;
+  background: var(--gray-0);
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  outline: none;
+  transition: all var(--transition-fast);
+  color: var(--gray-9);
 }
 
-.adduser-input::placeholder{
-    color: #654ea3;
+.adduser-input:focus {
+  border-color: var(--green-4);
+  background: var(--gray-0);
+  box-shadow: 0 0 0 3px rgba(43, 212, 150, 0.1);
 }
 
-
-.btn-group{
-    display: flex;
-    gap: 15px;
-    margin-top: 10px;
-    flex-direction: column;
+.adduser-input::placeholder {
+  color: var(--gray-4);
 }
 
-.submitt-btn{
-    background: #654ea3;  /* fallback for old browsers */
-background: -webkit-linear-gradient(to right, #eaafc8, #654ea3);  /* Chrome 10-25, Safari 5.1-6 */
-background: linear-gradient(to right, #eaafc8, #654ea3); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-color: white;
-border: none;
-border-radius: 10px;
-font-size: 1rem;
-font-weight: 500;
-cursor: pointer;
-letter-spacing: 1px;
-margin-top: 10px;
-width: 100%;
-padding: 15px;
+.adduser-input:disabled {
+  background: var(--gray-2);
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
-.submitt-btn:hover{
-    transform: translateY(-2px);
-    box-shadow: #3f3068;
-    color: #3f3068;
-    font-weight: 900;
-    font-style: italic;
+.btn-group {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+  flex-direction: column;
 }
 
-.cancel-btn{
-background: transparent;
-border:2px solid #3f3068 ;
-color: #3f3068;
-border-radius: 10px;
-font-size: 1rem;
-font-weight: 500;
-cursor: pointer;
-letter-spacing: 1px;
-margin-top: 10px;
-width: 100%;
-padding: 15px;
+.submitt-btn,
+.cancel-btn {
+  width: 100%;
+  padding: 15px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  letter-spacing: 1px;
+  text-align: center;
+  box-sizing: border-box;
 }
 
-.cancel-btn:hover{
-transform: translateY(-2px);
-    box-shadow: #3f3068;
-    color: #3f3068;
-    font-weight: 900;
-    font-style: italic;
+.submitt-btn {
+  color: var(--gray-0);
+  border: none;
+  background: linear-gradient(135deg, var(--gray-6), var(--gray-8));
 }
 
-@keyframes slideInUp{
-    from{
-        opacity: 0;
-        transform: translateY(50px);
-    }
-    to{
-        opacity: 1;
-        transform: translateY(0);
-    }
+.submitt-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--btn-primary-hover-shadow);
+  background: linear-gradient(135deg, var(--green-5), var(--green-7));
+  color: var(--gray-0);
 }
 
-
-/* animation de base */
-.page-animate {
-  animation: slideFade 1s ease forwards;
+.submitt-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
+.cancel-btn {
+  color: var(--gray-8);
+  background: transparent;
+  border: 2px solid var(--gray-4);
+  text-decoration: none;
+  display: inline-block;
+}
+
+.cancel-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--green-5);
+  color: var(--green-6);
+  background: rgba(43, 212, 150, 0.05);
+  box-shadow: 0 4px 15px rgba(43, 212, 150, 0.2);
+  font-weight: 700;
+}
+
+/* Error message */
+.error-message {
+  color: var(--error);
+  background-color: rgba(231, 76, 60, 0.1);
+  padding: 12px 15px;
+  border-radius: var(--radius-md);
+  margin: 10px 0;
+  font-size: 0.9rem;
+  border-left: 4px solid var(--error);
+}
+
+/* Animation */
 @keyframes slideFade {
   from {
     opacity: 0;
@@ -236,75 +208,99 @@ transform: translateY(-2px);
     transform: translateX(0);
   }
 }
-.login-desc {
-  animation: slideFromRight 1.5s ease forwards;
+
+.page-animate {
+  animation: slideFade 0.8s ease forwards;
 }
 
-@keyframes slideFromRight {
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
+/* Responsive Design */
 
-
-
-@media (max-width: 480px) {
-
+@media (min-width: 768px) {
   .adduser-container {
-    padding: 10px;
-    margin-top: 60px; 
+    height: calc(100dvh - 96px);
   }
-
+}
+@media (max-width: 768px) {
   .adduser-wrapper {
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
     height: auto;
     border-radius: 20px;
   }
 
-  
   .adduser-desc {
     position: relative;
     width: 100%;
     height: auto;
-    padding: 20px;
+    padding: 30px;
     border-radius: 20px 20px 0 0;
   }
 
-  .nom {
+  .adduser-desc h2 {
     font-size: 2rem;
-    transform: none;
-    margin-top: 10px;
+  }
+
+  .icon svg {
+    width: 100px;
+    height: 100px;
+  }
+
+  .adduser-form-container {
+    position: relative;
+    width: 100%;
+    height: auto;
+    padding: 30px 20px;
+  }
+
+  .adduser-form-box h2 {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .adduser-container {
+    padding: 70px 10px 0 10px;
+    margin-top: 0;
+  }
+
+  .adduser-wrapper {
+    border-radius: 20px;
+  }
+
+  .adduser-desc {
+    padding: 25px 15px;
+  }
+
+  .adduser-desc h2 {
+    font-size: 1.6rem;
   }
 
   .adduser-desc p {
     font-size: 0.9rem;
   }
 
+  .icon svg {
+    width: 80px;
+    height: 80px;
+  }
 
   .adduser-form-container {
-    position: relative;
-    width: 100%;
-    height: auto;
     padding: 25px 15px;
   }
 
   .adduser-form-box h2 {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
     margin-bottom: 20px;
   }
 
   .adduser-input {
     padding: 12px 15px;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
   }
 
   .submitt-btn,
   .cancel-btn {
     padding: 13px;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
   }
 }

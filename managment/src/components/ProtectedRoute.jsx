@@ -27,7 +27,7 @@ const ProtectedRoute = ({ children, requireAdmin = false }) => {
 
   //  Admin only
   if (requireAdmin && user.role !== "admin") {
-    return <Navigate to="/myuserprofil" replace />;
+    return <Navigate to="/user-profile" replace />;
   }
 
   // toutes les conditions sont passees return children ... adminlayout out userlayout

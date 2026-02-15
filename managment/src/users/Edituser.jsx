@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Edituser.css";
+import Button from "../components/button/Button";
+import Dropdown from "../components/Dropdown/Dropdown";
+import Input from "../components/input/Input";
 
 const Edituser = () => {
   const { id } = useParams();
@@ -15,62 +18,64 @@ const Edituser = () => {
     password: "",
     role: "",
     profil: "",
-    departement:"",
+    departement: "",
   });
 
- useEffect(() => {
-  const fetchUser = async () => {
-    setUserLoading(true);
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get(
-        `http://localhost:4000/api/users/${id}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      if (response.data) {
-        const userData = response.data;
-
-        // Convert dates to YYYY-MM-DD
-        const startDate = userData.task?.startDate
-          ? userData.task.startDate.slice(0, 10)
-          : "";
-        const endDate = userData.task?.endDate
-          ? userData.task.endDate.slice(0, 10)
-          : "";
-
-        setUsers({
-          ...userData,
-          task: {
-            ...userData.task,
-            startDate,
-            endDate,
+  useEffect(() => {
+    const fetchUser = async () => {
+      setUserLoading(true);
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `http://localhost:4000/api/users/${id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
           },
-        });
-      }
-    } catch (error) {
-      alert("Erreur lors de la récupération de l'utilisateur");
-    } finally {
-      setUserLoading(false);
-    }
-  };
+        );
 
-  fetchUser();
-}, [id]);
+        if (response.data) {
+          const userData = response.data;
+
+          const startDate = userData.task?.startDate
+            ? userData.task.startDate.slice(0, 10)
+            : "";
+          const endDate = userData.task?.endDate
+            ? userData.task.endDate.slice(0, 10)
+            : "";
+
+          setUsers({
+            ...userData,
+            task: {
+              ...userData.task,
+              startDate,
+              endDate,
+            },
+          });
+        }
+      } catch (error) {
+        alert("Erreur lors de la récupération de l'utilisateur");
+      } finally {
+        setUserLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name.startsWith("task.")) {
+
+    // Check if name exists before calling startsWith
+    if (name && name.startsWith("task.")) {
       const field = name.split(".")[1];
       setUsers((prev) => ({
         ...prev,
         task: { ...prev.task, [field]: value },
       }));
-    } else {
+    } else if (name) {
       setUsers((prev) => ({ ...prev, [name]: value }));
     }
+    // If name is undefined, we can't update anything
   };
 
   const handleSubmit = async (e) => {
@@ -81,9 +86,9 @@ const Edituser = () => {
       formData.append("email", users.email);
       formData.append("role", users.role);
       formData.append("departement", users.departement);
-      formData.append("task", users.task.task);
-      formData.append("startDate", users.task.startDate);
-      formData.append("endDate", users.task.endDate);
+      formData.append("task", users.task?.task || "");
+      formData.append("startDate", users.task?.startDate || "");
+      formData.append("endDate", users.task?.endDate || "");
       if (profil) formData.append("profil", profil);
 
       const token = localStorage.getItem("token");
@@ -95,142 +100,164 @@ const Edituser = () => {
             Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
           },
-        }
+        },
       );
 
       if (response.data) {
-        setUsers({
-          username: response.data.username,
-          email: response.data.email,
-          role: response.data.role,
-          profil: response.data.profil,
-          
-            departement: response.data.departement,
-            
-     
-        });
         navigate("/admin-dashboard");
       }
     } catch (error) {
       alert(error.response?.data?.error || "Erreur lors de la mise à jour");
     }
   };
+  const handleCancel = () => {
+    navigate(`/admin-dashboard`);
+    setUsers({
+      username: "",
+      email: "",
+      password: "",
+      role: "",
+      profil: "",
+      departement: "",
+    });
+  };
+
+  if (userLoading) {
+    return (
+      <div className="edituser-container page-animate">
+        <div className="spinner"></div>
+      </div>
+    );
+  }
 
   return (
-    <>
-      {userLoading ? (
-        <div>Loading...</div>
-      ) : (
-        <div className="edituser-container page-animate">
-          <div className="edituser-wrapper">
-            <div className="adduser-desc">
-              <div className="icon">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="160"
-                  height="160"
-                  fill="currentColor"
-                  viewBox="0 0 16 16"
-                >
-                  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                  <path
-                    fillRule="evenodd"
-                    d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"
-                  />
-                </svg>
-              </div>
-              <h2>Edit user</h2>
-            </div>
-            <div className="adduser-form-container">
-              <div className="adduser-form-box">
-                <form className="adduser-form" onSubmit={handleSubmit}>
-                  {users.profil && (
-                    <div className="user-info">
-                      <img
-                        src={`http://localhost:4000/${users.profil}`}
-                        alt="profil"
-                        className="user-img"
-                      />
-                      <span className="user-name">{users.username}</span>
-                    </div>
-                  )}
-                  <div>
-                    <label className="text">Your photo</label>
-                    <input
-                      className="adduser-input"
-                      type="file"
-                      name="profil"
-                      accept="image/*"
-                      onChange={(e) => setProfil(e.target.files[0])}
-                    />
-                  </div>
-                  <div>
-                    <label className="text" htmlFor="username">
-                      username
-                    </label>
-                    <input
-                      type="text"
-                      className="adduser-input"
-                      placeholder="your name"
-                      name="username"
-                      value={users.username||""}
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <div>
-                    <label className="text" htmlFor="email">
-                      email
-                    </label>
-                    <input
-                      type="email"
-                      className="adduser-input"
-                      placeholder="your email"
-                      name="email"
-                      value={users.email||""}
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <div>
-                    <label className="text" htmlFor="role">
-                      role
-                    </label>
-                    <select
-                      className="adduser-input"
-                      name="role"
-                      value={users.role||""}
-                      onChange={handleChange}
-                    >
-                      <option value="admin">admin</option>
-                      <option value="user">user</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="text" >
-                      departement
-                    </label>
-                    <select
-                      className="adduser-input"
-                      name="departement"
-                      value={users.departement||""}
-                      onChange={handleChange}
-                    >
-                      <option value="It">IT</option>
-                      <option value="RH">HR</option>
-                      <option value="Marketing">Marketing</option>
+    <div className="edituser-container page-animate">
+      <div className="edituser-wrapper">
+        <div className="adduser-desc">
+          <div className="icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="160"
+              height="160"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+              <path
+                fillRule="evenodd"
+                d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"
+              />
+            </svg>
+          </div>
+          <h2>Edit User</h2>
+          <p>Modify user information</p>
+        </div>
 
-                    </select>
+        <div className="adduser-form-container">
+          <div className="adduser-form-box">
+            <form className="adduser-form" onSubmit={handleSubmit}>
+              <div className="form-input-wrapper">
+                {users.profil && (
+                  <div className="user-info">
+                    <img
+                      src={`http://localhost:4000/${users.profil}`}
+                      alt="profil"
+                      className="user-img"
+                    />
+                    <span className="user-name">{users.username}</span>
                   </div>
-                     <button className="submitt-btn">Edit</button>
-                </form>
-                <Link to="/admin-dashboard">
-                  <button className="cancel-btn">Cancel</button>
-                </Link>
+                )}
+
+                <div className="form-group">
+                  <label className="text">Profile Photo</label>
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setProfil(e.target.files[0])}
+                    fullWidth
+                    size="medium"
+                  />
+                </div>
               </div>
-            </div>
+              <div className="form-input-wrapper">
+                <div className="form-group">
+                  <label className="text">Username</label>
+                  <Input
+                    type="text"
+                    placeholder="Enter username"
+                    name="username"
+                    value={users.username || ""}
+                    onChange={handleChange}
+                    fullWidth
+                    size="medium"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="text">Email</label>
+                  <Input
+                    type="email"
+                    placeholder="Enter email"
+                    name="email"
+                    value={users.email || ""}
+                    onChange={handleChange}
+                    fullWidth
+                    size="medium"
+                  />
+                </div>
+              </div>
+              <div className="form-group">
+                <label className="text">Role</label>
+                <Dropdown
+                  value={users.role || ""}
+                  onChange={handleChange}
+                  name="role"
+                  options={[
+                    { value: "admin", label: "Administrator" },
+                    { value: "user", label: "Regular User" },
+                  ]}
+                  placeholder="Select role"
+                  fullWidth
+                  size="medium"
+                  variant="outlined"
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="text">Department</label>
+                <Dropdown
+                  value={users.departement || ""}
+                  onChange={handleChange}
+                  name="departement"
+                  options={[
+                    { value: "IT", label: "IT" },
+                    { value: "HR", label: "Human Resources" },
+                    { value: "Marketing", label: "Marketing" },
+                    { value: "Finance", label: "Finance" },
+                  ]}
+                  placeholder="Select department"
+                  fullWidth
+                  size="medium"
+                  variant="outlined"
+                />
+              </div>
+              <div className="task-btn-group">
+                <button
+                  type="button"
+                  className="task-cancel-btn"
+                  onClick={handleCancel}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="task-submit-btn">
+                  Save changes
+                </button>
+              </div>
+            </form>
           </div>
         </div>
-      )}
-    </>
+      </div>
+    </div>
   );
 };
 

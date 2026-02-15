@@ -1,126 +1,149 @@
-import  { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { useMutation } from '@tanstack/react-query'
-import { register } from '../../../services/auth/register'
-import './Register.css'
-import Button from '../../../components/Button'
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { register } from "../../../services/auth/register";
+import "./Register.css";
 
-
-import { validateEmail,validatePassword,validateUsername } from '../../../validation/AuthValidation'
+import {
+  validateEmail,
+  validatePassword,
+  validateUsername,
+} from "../../../validation/AuthValidation";
+import Button from "../../../components/button/Button";
 
 const Register = () => {
-    const [username, setUsername] = useState("")
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const [role, setRole] = useState("user")
-    const [errors,setErrors]=useState({username:"",email:"",password:"",server:""})
-    const navigate = useNavigate()
-    
-    const registerMutation = useMutation({
-        mutationFn: ({ email, password, username, role }) => 
-            register(username, email, password,role),
-        
-        onSuccess: (data) => {
-            console.log('Registration successful:', data)
-            navigate("/Login")
-        },
-        
-        onError: (error) => {
-            console.error('Registration failed:', error)
-            setErrors(prev => ({ ...prev, server: error.response?.data?.msg || "Registration failed" }))
-        }
-    })
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    role: "user",
+  });
+  const [errors, setErrors] = useState({
+    username: "",
+    email: "",
+    password: "",
+    server: "",
+  });
+  const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        const usernameError=validateUsername(username)
-        const emailError= validateEmail(email)
-        const passwordError=validatePassword(password)
+  const registerMutation = useMutation({
+    mutationFn: ({ email, password, username, role }) =>
+      register(username, email, password, role),
 
+    onSuccess: (data) => {
+      console.log("Registration successful:", data);
+      navigate("/Login");
+    },
 
+    onError: (error) => {
+      console.error("Registration failed:", error);
+      setErrors((prev) => ({
+        ...prev,
+        server: error.response?.data?.msg || "Registration failed",
+      }));
+    },
+  });
 
-        setErrors({username:usernameError,email:emailError,password:passwordError,server:""})
-        if (usernameError|| emailError|| passwordError)return
-        registerMutation.mutate({ email, password, username, role })
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const usernameError = validateUsername(formData.username);
+    const emailError = validateEmail(formData.email);
+    const passwordError = validatePassword(formData.password);
+
+    setErrors({
+      username: usernameError,
+      email: emailError,
+      password: passwordError,
+      server: "",
+    });
+
+    if (usernameError || emailError || passwordError) return;
+    registerMutation.mutate(formData);
+  };
+
+  const handleInputChange = (field, value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: "" }));
     }
+  };
 
-    return (
-        <div className='register-container page-animate'>
-            <div className='register-wrapper'>
-                <div className='register-desc'>
-                    <h2>Welcome Back!</h2>
-                    <p>Enter your personal details to use all of site features</p>
-                    <Link to="/Login">
-                        <Button variant='outline'>SIGN IN</Button>
-                    </Link>
-                </div>
-
-                <div className='register-form-container'>
-                    <div className='register-form-box'>
-                        <h2>Create your Account</h2>
-                        <form className='register-form' onSubmit={handleSubmit}>
-                            <div>
-                                <input 
-                                    type="text"
-                                    className='register-input'
-                                    placeholder='your name'
-                                    value={username}
-                                    onChange={(e) => setUsername(e.target.value)}
-                                    disabled={registerMutation.isPending}
-                                    
-                                />
-                                {errors.username && <p className='error-text'>{errors.username}</p>}
-                            </div>
-
-                            <div>
-                                <input 
-                                    
-                                    className='register-input'
-                                    placeholder='your email'
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    disabled={registerMutation.isPending}
-                                    
-                                />
-                                {errors.email && <p className='error-text'>{errors.email}</p>}
-                            </div>
-
-                            
-
-                            <div>
-                                <input 
-                                    type="password"
-                                    className='register-input'
-                                    placeholder='your password'
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    disabled={registerMutation.isPending}
-                                    
-                                />
-                                {errors.password && <p className='error-text'>{errors.password}</p>}
-                            </div>
-                           
-
-
-                            {registerMutation.isError && (
-                                <div className='error-message'>
-                                    {registerMutation.error?.response?.data?.msg || 
-                                     'Registration failed. Please try again.'}
-                                </div>
-                            )}
-
-                            <Button 
-                                type='submit' 
-                                loading={registerMutation.isPending}
-                            >
-                                {registerMutation.isPending ? 'REGISTERING...' : 'REGISTER'}
-                            </Button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+  return (
+    <div className="auth-container page-animate">
+      <div className="auth-wrapper">
+        <div className="auth-description register">
+          <h2>Welcome Back!</h2>
+          <p>Enter your personal details to use all of site features</p>
+          <Link to="/Login">
+            <Button variant="outline">SIGN IN</Button>
+          </Link>
         </div>
-    )
-}
 
-export default Register
+        <div className="auth-form-container">
+          <div className="auth-form-box">
+            <h2>Create your Account</h2>
+            <form className="auth-form" onSubmit={handleSubmit}>
+              <Input
+                type="text"
+                label="Username"
+                placeholder="Enter your username"
+                value={formData.username}
+                onChange={(e) => handleInputChange("username", e.target.value)}
+                error={errors.username}
+                disabled={registerMutation.isPending}
+                required
+              />
+
+              <Input
+                type="email"
+                label="Email"
+                placeholder="Enter your email"
+                value={formData.email}
+                onChange={(e) => handleInputChange("email", e.target.value)}
+                error={errors.email}
+                disabled={registerMutation.isPending}
+                required
+              />
+
+              <Input
+                type="password"
+                label="Password"
+                placeholder="Enter your password"
+                value={formData.password}
+                onChange={(e) => handleInputChange("password", e.target.value)}
+                error={errors.password}
+                disabled={registerMutation.isPending}
+                required
+              />
+
+              <Dropdown
+                label="Role"
+                value={formData.role}
+                onChange={(e) => handleInputChange("role", e.target.value)}
+                options={[
+                  { value: "user", label: "User" },
+                  { value: "admin", label: "Admin" },
+                ]}
+                disabled={registerMutation.isPending}
+              />
+
+              {errors.server && (
+                <div className="error-message">{errors.server}</div>
+              )}
+
+              <Button
+                type="submit"
+                loading={registerMutation.isPending}
+                className="btn-full"
+              >
+                {registerMutation.isPending ? "REGISTERING..." : "REGISTER"}
+              </Button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Register;

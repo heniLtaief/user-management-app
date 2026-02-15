@@ -8,14 +8,9 @@ const AddTask = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-
   const [task, setTask] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
- 
- 
-
-
 
   const queryClient = useQueryClient();
   const addMutation = useMutation({
@@ -48,7 +43,6 @@ const AddTask = () => {
     e.preventDefault();
 
     const taskData = {
-
       task,
       startDate,
       endDate,
@@ -56,6 +50,14 @@ const AddTask = () => {
     };
 
     addMutation.mutate(taskData);
+  };
+  const handleCancel = () => {
+    navigate(`/task-dashboard/${id}`);
+    setTaskData({
+      task: "",
+      startDate: "",
+      endDate: "",
+    });
   };
 
   return (
@@ -73,8 +75,6 @@ const AddTask = () => {
           <div className="task-form-box">
             <h2 className="task-form-title">Task Details</h2>
             <form className="task-form" onSubmit={handleSubmit}>
-
-              <label>Task</label>
               <input
                 className="task-input"
                 type="text"
@@ -106,14 +106,16 @@ const AddTask = () => {
               </div>
 
               <div className="task-btn-group">
-                <button className="task-submit-btn" type="submit">
-                  Add Task
+                <button
+                  type="button"
+                  className="task-cancel-btn"
+                  onClick={handleCancel}
+                >
+                  Cancel
                 </button>
-                <Link to={`/task-dashboard/${id}`}>
-                  <button type="button" className="task-cancel-btn">
-                    Cancel
-                  </button>
-                </Link>
+                <button type="submit" className="task-submit-btn">
+                  Update Task
+                </button>
               </div>
             </form>
           </div>

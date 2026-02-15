@@ -1,20 +1,236 @@
-@keyframes slideInUp{
-    from{
-        opacity: 0;
-        transform: translateY(50px);
-    }
-    to{
-        opacity: 1;
-        transform: translateY(0);
-    }
+/* Edituser.css - Updated with Gray/Green palette */
+.edituser-container {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 80px 16px 16px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  box-shadow: var(--shadow-xl);
+  border-radius: 40px;
+  overflow: hidden;
+  background: var(--surface);
 }
 
-
-/* animation de base */
-.page-animate {
-  animation: slideFade 1s ease forwards;
+.edituser-wrapper {
+  width: 100%;
+  height: 100%;
 }
 
+.adduser-desc {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 45%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--gray-6), var(--gray-9));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--gray-0);
+  padding: 40px;
+  text-align: center;
+  border-bottom-right-radius: 100px;
+}
+
+.adduser-desc h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+  color: var(--gray-0);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.adduser-desc p {
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+  opacity: 0.95;
+  line-height: 1.6;
+}
+
+.icon {
+  margin-bottom: 20px;
+  opacity: 0.9;
+  color: var(--gray-0);
+}
+
+.icon svg {
+  width: 120px;
+  height: 120px;
+  fill: var(--gray-0);
+}
+
+.adduser-form-container {
+  width: 55%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 40px;
+}
+
+.adduser-form-box {
+  width: 100%;
+}
+
+.adduser-form-box h2 {
+  font-size: 2rem;
+  color: var(--gray-7);
+  margin-bottom: 30px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.adduser-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.text {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--gray-7);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.adduser-input {
+  width: 100%;
+  padding: 14px 18px;
+  background: var(--gray-0);
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  outline: none;
+  transition: all var(--transition-fast);
+  color: var(--gray-9);
+}
+
+.adduser-input:focus {
+  border-color: var(--green-4);
+  background: var(--gray-0);
+  box-shadow: 0 0 0 3px rgba(43, 212, 150, 0.1);
+}
+
+.adduser-input::placeholder {
+  color: var(--gray-4);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  background: var(--gray-1);
+  border-radius: var(--radius-lg);
+}
+
+.user-img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--gray-0);
+  box-shadow: var(--shadow-sm);
+}
+
+.user-name {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--gray-8);
+}
+
+.form-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-group {
+  width: 100%;
+}
+
+.edit-user-btn-group {
+  display: flex;
+  gap: 15px;
+  margin-top: auto;
+}
+
+.submitt-btn,
+.cancel-btn {
+  width: 100%;
+  padding: 15px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  letter-spacing: 1px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.submitt-btn {
+  color: var(--gray-0);
+  border: none;
+  background: linear-gradient(135deg, var(--gray-6), var(--gray-8));
+}
+
+.submitt-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--btn-primary-hover-shadow);
+  background: linear-gradient(135deg, var(--green-5), var(--green-7));
+  color: var(--gray-0);
+}
+
+.cancel-btn {
+  color: var(--gray-8);
+  background: transparent;
+  border: 2px solid var(--gray-4);
+  text-decoration: none;
+  display: inline-block;
+}
+
+.cancel-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--green-5);
+  color: var(--green-6);
+  background: rgba(43, 212, 150, 0.05);
+  box-shadow: 0 4px 15px rgba(43, 212, 150, 0.2);
+  font-weight: 700;
+}
+
+/* Loading state */
+.edituser-container .spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--gray-2);
+  border-top-color: var(--green-4);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error message */
+.error-message {
+  color: var(--error);
+  background-color: rgba(231, 76, 60, 0.1);
+  padding: 12px 15px;
+  border-radius: var(--radius-md);
+  margin: 10px 0;
+  font-size: 0.9rem;
+  border-left: 4px solid var(--error);
+}
+
+/* Animation */
 @keyframes slideFade {
   from {
     opacity: 0;
@@ -25,37 +241,106 @@
     transform: translateX(0);
   }
 }
-.login-desc {
-  animation: slideFromRight 1.5s ease forwards;
+
+.page-animate {
+  animation: slideFade 0.8s ease forwards;
 }
 
-@keyframes slideFromRight {
-  from {
-    transform: translateX(100%);
+/* Responsive Design */
+@media (min-width: 768px) {
+  .edituser-container {
+    height: calc(100dvh - 96px);
   }
-  to {
-    transform: translateX(0);
+}
+@media (max-width: 767px) {
+  .edituser-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border-radius: 20px;
+  }
+
+  .adduser-desc {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: 30px;
+    border-radius: 20px 20px 0 0;
+  }
+
+  .adduser-desc h2 {
+    font-size: 2rem;
+  }
+
+  .icon svg {
+    width: 100px;
+    height: 100px;
+  }
+
+  .adduser-form-container {
+    position: relative;
+    width: 100%;
+    height: auto;
+    padding: 30px 20px;
+  }
+
+  .adduser-form-box h2 {
+    font-size: 1.6rem;
+  }
+
+  .user-img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .user-name {
+    font-size: 1rem;
   }
 }
 
+@media (max-width: 480px) {
+  .adduser-desc {
+    padding: 25px 15px;
+  }
 
-.user-info{
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 15px;
+  .adduser-desc h2 {
+    font-size: 1.6rem;
+  }
 
-}
+  .adduser-desc p {
+    font-size: 0.9rem;
+  }
 
-.user-img{
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  object-fit: cover;
-}
+  .icon svg {
+    width: 80px;
+    height: 80px;
+  }
 
-.user-name{
-  font-weight: bold;
-  font-size: 1.2rem;
-  color: #654ea3;
+  .adduser-form-container {
+    padding: 25px 15px;
+  }
+
+  .adduser-form-box h2 {
+    font-size: 1.4rem;
+  }
+
+  .adduser-input {
+    padding: 12px 15px;
+    font-size: 0.95rem;
+  }
+
+  .submitt-btn,
+  .cancel-btn {
+    padding: 13px;
+    font-size: 0.95rem;
+  }
+
+  .user-info {
+    padding: 12px;
+  }
+
+  .user-img {
+    width: 50px;
+    height: 50px;
+  }
 }

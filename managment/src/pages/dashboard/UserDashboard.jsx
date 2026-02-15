@@ -1,28 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import DataTable from "react-data-table-component";
-import StatusToggle from "../../components/StatusToggle"
+import StatusToggle from "../../components/StatusToggle";
 import "./AdminDashboard.css"; // ton CSS existant
+import api from "../../api/api";
 
 const fetchMyTasks = async () => {
-  const token = localStorage.getItem("token");
-  const res = await fetch("http://localhost:4000/api/users/me/tasks", {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  if (!res.ok) throw new Error("Failed to fetch tasks");
-  return res.json();
+  const response = await api.get("/users/me/tasks");
+  return response.data;
 };
 
 const fetchMe = async () => {
-  const token = localStorage.getItem("token");
-  const res = await fetch("http://localhost:4000/api/users/me", {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  if (!res.ok) throw new Error("Failed to fetch user");
-  return res.json();
+  const response = await api.get("/users/me");
+  return response.data;
 };
 
-// Format date helper
 const formatDate = (date) => {
   if (!date) return "-";
   const d = new Date(date);
@@ -33,37 +25,22 @@ const formatDate = (date) => {
   return `${year}/${month}/${day}`;
 };
 
-// Days left helper
-const daysLeft = (startDate, endDate) => {
-  if (!startDate || !endDate) return "-";
-  const start = new Date(startDate);
+const daysLeft = (endDate) => {
+  if (!endDate) return "-";
+  const today = new Date();
   const end = new Date(endDate);
-  if (isNaN(start) || isNaN(end)) return "-";
-  const diffTime = end - start;
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  return diffDays >= 0 ? `${diffDays} days` : "Expired";
-};
-
-// API call to update status
-const updateTaskStatus = async ({ userId, taskId, status }) => {
-  const token = localStorage.getItem("token");
-  const res = await fetch(
-    `http://localhost:4000/api/users/${userId}/task/${taskId}/status`,
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ status }),
-    }
-  );
-  if (!res.ok) throw new Error("Failed to update status");
-  return res.json();
+  if (isNaN(end)) return "-";
+  const diffDays = Math.ceil((end - today) / (1000 * 60 * 60 * 24));
+  return diffDays >= 0 ? `${diffDays} days left` : "Expired";
 };
 
 const UserDashboard = () => {
-  const { data: taskData, isLoading, isError, error } = useQuery({
+  const {
+    data: taskData,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ["my-tasks"],
     queryFn: fetchMyTasks,
   });
@@ -73,82 +50,176 @@ const UserDashboard = () => {
     queryFn: fetchMe,
   });
 
-  const [tasksArray, setTasksArray] = useState([]);
+  const [tasks, setTasks] = useState([]);
 
-  // Initialiser le tableau avec user info
-  useEffect(() => {
+  React.useEffect(() => {
     if (taskData && me) {
-      const tasks = taskData.tasks.map((t) => ({
-        ...t,
+      const formattedTasks = taskData.tasks.map((task) => ({
+        ...task,
         userId: me._id,
         departement: me.departement || "-",
       }));
-      setTasksArray(tasks);
+      setTasks(formattedTasks);
     }
   }, [taskData, me]);
 
-  if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>Error: {error.message}</p>;
+  const handleStatusChange = async (taskId, newStatus) => {
+    try {
+      // Update local state immediately
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task._id === taskId ? { ...task, status: newStatus } : task,
+        ),
+      );
 
-  // Colonnes avec StatusToggle
+      // Update on server
+      const currentTask = tasks.find((task) => task._id === taskId);
+      await api.put(`/users/${currentTask.userId}/task/${taskId}/status`, {
+        status: newStatus,
+      });
+    } catch (error) {
+      console.error("Failed to update status:", error);
+      // Revert on error
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task._id === taskId ? { ...task, status: currentTask.status } : task,
+        ),
+      );
+    }
+  };
+
   const columns = [
-    { name: "departement", selector: (row) => row.departement, sortable: true },
-    { name: "task", selector: (row) => row.task },
-    { name: "start Date", selector: (row) => formatDate(row.startDate) },
-    { name: "end Date", selector: (row) => formatDate(row.endDate) },
-    { name: "days left", selector: (row) => daysLeft(row.startDate, row.endDate) },
     {
-      name: "task status",
+      name: "Department",
+      selector: (row) => row.departement,
+      sortable: true,
+    },
+    {
+      name: "Task",
+      selector: (row) => row.task,
+      sortable: true,
+    },
+    {
+      name: "Start Date",
+      selector: (row) => formatDate(row.startDate),
+      sortable: true,
+    },
+    {
+      name: "End Date",
+      selector: (row) => formatDate(row.endDate),
+      sortable: true,
+    },
+    {
+      name: "Days Left",
+      selector: (row) => daysLeft(row.endDate),
+      sortable: true,
+    },
+    {
+      name: "Status",
       cell: (row) => (
         <StatusToggle
           value={row.status}
           variant="pill"
           size="sm"
           showTooltip
-          onChange={async (newStatus) => {
-            // Mise à jour immédiate
-            setTasksArray((prev) =>
-              prev.map((task) =>
-                task._id === row._id ? { ...task, status: newStatus } : task
-              )
-            );
-            // Appel API
-            try {
-              await updateTaskStatus({
-                userId: row.userId,
-                taskId: row._id,
-                status: newStatus,
-              });
-            } catch (err) {
-              console.error("Status update failed", err);
-              // Revert en cas d'erreur
-              setTasksArray((prev) =>
-                prev.map((task) =>
-                  task._id === row._id ? { ...task, status: row.status } : task
-                )
-              );
-            }
-          }}
+          onChange={(newStatus) => handleStatusChange(row._id, newStatus)}
         />
       ),
+      sortable: true,
+      sortFunction: (a, b) => a.status - b.status,
     },
   ];
 
+  if (isLoading) {
+    return (
+      <div className="dashboard-loading">
+        <div className="spinner"></div>
+        <p>Loading your tasks...</p>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="dashboard-error">
+        <p>Error: {error.message}</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="table-container">
-      <DataTable
-        columns={columns}
-        data={tasksArray}
-        keyField="_id"
-        pagination
-        highlightOnHover
-        striped
-        conditionalRowStyles={[
-          { when: (row) => row.status === 1, style: { backgroundColor: "#d3d3d3", color: "#000" } },
-          { when: (row) => row.status === 2, style: { backgroundColor: "#FFD8A8", color: "#000" } },
-          { when: (row) => row.status === 3, style: { backgroundColor: "#A8E6CF", color: "#000" } },
-        ]}
-      />
+    <div className="user-dashboard">
+      <div className="dashboard-header">
+        <h1 className="dashboard-title">My Tasks</h1>
+        <p className="dashboard-subtitle">
+          You have {tasks.length} task{tasks.length !== 1 ? "s" : ""} assigned
+        </p>
+      </div>
+
+      <div className="table-container">
+        <DataTable
+          columns={columns}
+          data={tasks}
+          pagination
+          paginationPerPage={10}
+          paginationRowsPerPageOptions={[5, 10, 20]}
+          highlightOnHover
+          striped
+          pointerOnHover
+          conditionalRowStyles={[
+            {
+              when: (row) => row.status === 1,
+              style: {
+                backgroundColor: "var(--gray-0)",
+                "&:hover": {
+                  backgroundColor: "var(--gray-1)",
+                },
+              },
+            },
+            {
+              when: (row) => row.status === 2,
+              style: {
+                backgroundColor: "rgba(243, 156, 18, 0.1)",
+                "&:hover": {
+                  backgroundColor: "rgba(243, 156, 18, 0.2)",
+                },
+              },
+            },
+            {
+              when: (row) => row.status === 3,
+              style: {
+                backgroundColor: "rgba(39, 174, 96, 0.1)",
+                "&:hover": {
+                  backgroundColor: "rgba(39, 174, 96, 0.2)",
+                },
+              },
+            },
+          ]}
+          customStyles={{
+            headRow: {
+              style: {
+                backgroundColor: "var(--gray-9)",
+                color: "white",
+                fontSize: "0.9rem",
+                fontWeight: "600",
+              },
+            },
+            rows: {
+              style: {
+                fontSize: "0.9rem",
+                cursor: "pointer",
+                transition: "background-color 0.2s ease",
+              },
+            },
+            pagination: {
+              style: {
+                backgroundColor: "var(--surface)",
+                borderTop: "1px solid var(--border)",
+              },
+            },
+          }}
+        />
+      </div>
     </div>
   );
 };
